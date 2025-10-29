@@ -5,6 +5,7 @@ from .forms import BookForm
 from .serializers import BookSerializer
 from rest_framework import generics
 import requests
+import json
 
 # ---------- Frontend Views ----------
 def book_list(request):
@@ -44,14 +45,24 @@ def book_detail(request, pk):
     return render(request, 'books/book_detail.html', {'book': book})
 
 def dashboard(request):
-    # Data for chart: count of books per author
-    qs = Book.objects.values('author').order_by('author')
-    data = {}
-    for row in qs:
-        author = row['author'] or 'Unknown'
-        data[author] = Book.objects.filter(author=author).count()
-    # send JSON data to template to be consumed by Chart.js
-    return render(request, 'books/dashboard.html', {'chart_data': data})
+    books = Book.objects.all()
+    author_counts = {}
+    for b in books:
+        author_counts[b.author] = author_counts.get(b.author, 0) + 1
+
+    authors = list(author_counts.keys())
+    counts = list(author_counts.values())
+
+    recent_books = Book.objects.order_by('-id')[:5]
+
+    context = {
+        'books': books,
+        'authors': authors,
+        'recent_books': recent_books,
+        'authors_json': json.dumps(authors),
+        'counts_json': json.dumps(counts),
+    }
+    return render(request, 'books/dashboard.html', context)
 
 # AJAX endpoint to fetch book info from OpenLibrary by ISBN
 def fetch_openlibrary(request):

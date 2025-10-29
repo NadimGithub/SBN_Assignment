@@ -10,6 +10,6 @@ urlpatterns = [
     path('books/<int:pk>/delete/', views.book_delete, name='book_delete'),
     path('books/<int:pk>/', views.book_detail, name='book_detail'),
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('fetch_openlibrary/', views.fetch_openlibrary, name='fetch_openlibrary'),  # AJAX endpoint for ISBN lookup
+    path('fetch_openlibrary/', views.fetch_openlibrary, name='fetch_openlibrary'), 
 
 ]

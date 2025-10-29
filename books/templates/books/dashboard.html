@@ -1,29 +1,75 @@
-{% extends "books/base.html" %}
+{% extends 'books/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 {% block content %}
-<h2>Dashboard</h2>
-<canvas id="booksChart" width="400" height="200"></canvas>
+
+<h2 class="fw-bold text-primary mb-4">Dashboard</h2>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4 col-12">
+      <div class="card text-center p-3 shadow-sm">
+          <h5>Total Books</h5>
+          <h2 class="text-primary">{{ books|length }}</h2>
+      </div>
+  </div>
+
+  <div class="col-md-4 col-12">
+      <div class="card text-center p-3 shadow-sm">
+          <h5>Authors</h5>
+          <h2 class="text-success">{{ authors|length }}</h2>
+      </div>
+  </div>
+
+  <div class="col-md-4 col-12">
+      <div class="card text-center p-3 shadow-sm">
+          <h5>Recent Additions</h5>
+          <h2 class="text-warning">{{ recent_books|length }}</h2>
+      </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header bg-primary text-white">
+    Books by Author
+  </div>
+  <div class="card-body">
+    <canvas id="booksChart" height="100"></canvas>
+  </div>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const chartData = {{ chart_data|safe }};
-const labels = Object.keys(chartData);
-const values = labels.map(l => chartData[l]);
+  document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById("booksChart").getContext("2d");
 
-const ctx = document.getElementById('booksChart').getContext('2d');
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: labels,
-    datasets: [{
-      label: 'Books per author',
-      data: values,
-      backgroundColor: 'rgba(54, 162, 235, 0.5)'
-    }]
-  },
-  options: {
-    responsive: true,
-    scales: { y: { beginAtZero: true, precision:0 } }
-  }
-});
+    const authors = JSON.parse('{{ authors_json|escapejs }}');
+    const counts = JSON.parse('{{ counts_json|escapejs }}');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: authors,
+        datasets: [{
+          label: 'Books Count',
+          data: counts,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  });
 </script>
-{% endblock %}
+
+{% endblock  %}
+
+

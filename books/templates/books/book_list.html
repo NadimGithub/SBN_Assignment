@@ -1,28 +1,47 @@
-{% extends "books/base.html" %}
+{% extends 'books/base.html' %}
+{% block title %}Book List{% endblock %}
 {% block content %}
-<h2>Books</h2>
-<table class="table table-striped">
-  <thead>
-    <tr><th>Title</th><th>Author</th><th>Price</th><th>ISBN</th><th>Actions</th></tr>
-  </thead>
-  <tbody>
-    {% for book in books %}
-    <tr>
-      <td><a href="{% url 'books:book_detail' book.pk %}">{{ book.title }}</a></td>
-      <td>{{ book.author }}</td>
-      <td>{{ book.price }}</td>
-      <td>{{ book.isbn }}</td>
-      <td>
-        <a class="btn btn-sm btn-secondary" href="{% url 'books:book_update' book.pk %}">Edit</a>
-        <form style="display:inline" method="post" action="{% url 'books:book_delete' book.pk %}">
-          {% csrf_token %}
-          <button class="btn btn-sm btn-danger" type="submit">Delete</button>
-        </form>
-      </td>
-    </tr>
-    {% empty %}
-      <tr><td colspan="5">No books yet — add one!</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">Book List</h2>
+    <a href="{% url 'books:book_create' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Add New</a>
+</div>
+
+<div class="card p-3">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.price }}</td>
+                    <td>
+                        <a href="{% url 'books:book_detail' book.id %}" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                        <a href="{% url 'books:book_update' book.id %}" class="btn btn-sm btn-outline-primary"><i class="fa fa-edit"></i></a>
+                        <a href="{% url 'books:book_delete' book.id %}" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No books found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}
+
+
