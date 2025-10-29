@@ -1,0 +1,17 @@
+{% extends "books/base.html" %}
+{% block content %}
+<h2>{{ book.title }}</h2>
+<p><strong>Author:</strong> {{ book.author }}</p>
+<p><strong>Price:</strong> {{ book.price }}</p>
+<p><strong>ISBN:</strong> {{ book.isbn }}</p>
+
+{% if confirm_delete %}
+  <form method="post">{% csrf_token %}
+    <button class="btn btn-danger" type="submit">Confirm Delete</button>
+    <a class="btn btn-secondary" href="{% url 'books:book_list' %}">Cancel</a>
+  </form>
+{% else %}
+  <a class="btn btn-secondary" href="{% url 'books:book_update' book.pk %}">Edit</a>
+  <a class="btn btn-outline-danger" href="{% url 'books:book_delete' book.pk %}">Delete</a>
+{% endif %}
+{% endblock %}

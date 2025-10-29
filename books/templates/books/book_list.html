@@ -1,0 +1,28 @@
+{% extends "books/base.html" %}
+{% block content %}
+<h2>Books</h2>
+<table class="table table-striped">
+  <thead>
+    <tr><th>Title</th><th>Author</th><th>Price</th><th>ISBN</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    {% for book in books %}
+    <tr>
+      <td><a href="{% url 'books:book_detail' book.pk %}">{{ book.title }}</a></td>
+      <td>{{ book.author }}</td>
+      <td>{{ book.price }}</td>
+      <td>{{ book.isbn }}</td>
+      <td>
+        <a class="btn btn-sm btn-secondary" href="{% url 'books:book_update' book.pk %}">Edit</a>
+        <form style="display:inline" method="post" action="{% url 'books:book_delete' book.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+      <tr><td colspan="5">No books yet — add one!</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
