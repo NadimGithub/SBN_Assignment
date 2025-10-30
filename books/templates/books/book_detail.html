@@ -10,8 +10,15 @@
 
 
     <div class="mt-3">
-        <a href="{% url 'books:book_update' book.id %}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
-        <a href="{% url 'books:book_list' %}" class="btn btn-outline-secondary">Back</a>
+        {% if confirm_delete %}
+  <form method="post">{% csrf_token %}
+    <button class="btn btn-danger" type="submit">Confirm Delete</button>
+    <a class="btn btn-secondary" href="{% url 'books:book_list' %}">Cancel</a>
+  </form>
+    {% else %}
+      <a class="btn btn-secondary" href="{% url 'books:book_update' book.pk %}">Edit</a>
+      <a class="btn btn-outline-danger" href="{% url 'books:book_delete' book.pk %}">Delete</a>
+    {% endif %}
     </div>
 </div>
 
